@@ -9,6 +9,7 @@
 
 # Needed because we enabled library 'gecko-dimc'
 # Activate baselining
+mavenCentral: true
 dimcBaselining: true
 github-project: org.gecko.utils
 base-version: 1.0.0
@@ -16,7 +17,6 @@ base-version: 1.0.0
 # Maven Central Group-Id
 # For Geckoprojects the groupid must start with org.geckoprojects
 -groupid: org.geckoprojects.utils
-mavenCentral: true
 
 javac.source: 11
 javac.target: 11

@@ -14,3 +14,8 @@ gecko-base:\
         path            = template
 Bundle-Name: Gecko Util bnd Library
 Bundle-Description: Gecko Util bnd Library
+
+-dependson: \
+	org.gecko.util.common,\
+	org.gecko.util.pool,\
+	org.gecko.util.pushstream
