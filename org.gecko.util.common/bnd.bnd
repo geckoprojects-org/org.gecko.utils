@@ -1,0 +1,3 @@
+Bundle-Version: 1.2.0.${tstamp}-SNAPSHOT
+Bundle-Name: Gecko Utils Commons
+Bundle-Description: Common helper classes

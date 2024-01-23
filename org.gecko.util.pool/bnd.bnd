@@ -1,0 +1,7 @@
+Bundle-Version: 1.2.0-${tstamp}-SNAPSHOT
+-buildpath: \
+	org.osgi.framework,\
+	org.osgi.service.component,\
+	org.osgi.service.cm
+Bundle-Name: Gecko Utils Pool
+Bundle-Description: Gecko Utils Thread Pool Wrapper

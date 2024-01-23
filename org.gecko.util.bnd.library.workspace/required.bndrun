@@ -1,0 +1,19 @@
+-runfw: org.apache.felix.framework
+-runee: JavaSE-17
+
+-runpath: \
+	org.apache.felix.configadmin;version='[1.9.26,1.9.27)',\
+	org.osgi.service.component;version='[1.5.1,1.5.2)',\
+	org.osgi.util.function;version='[1.2.0,1.2.1)',\
+	org.osgi.util.promise;version='[1.3.0,1.3.1)',\
+	org.osgi.util.pushstream;version='[1.1.0,1.1.1)'
+
+#example
+-runrequires: \
+	bnd.identity;id='org.gecko.util.common',\
+	bnd.identity;id='org.gecko.util.pool',\
+	bnd.identity;id='org.gecko.util.pushstream'
+-runbundles: \
+	org.gecko.util.common;version=snapshot,\
+	org.gecko.util.pool;version=snapshot,\
+	org.gecko.util.pushstream;version=snapshot
