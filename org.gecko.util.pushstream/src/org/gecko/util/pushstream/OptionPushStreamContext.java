@@ -15,16 +15,10 @@ package org.gecko.util.pushstream;
 
 import static java.util.Objects.isNull;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.BiConsumer;
 
 import org.gecko.util.pushstream.policy.GeckoPushbackPolicyOption;
-import org.osgi.util.function.Consumer;
-import org.osgi.util.function.Predicate;
 import org.osgi.util.pushstream.PushEvent;
 import org.osgi.util.pushstream.PushbackPolicy;
 import org.osgi.util.pushstream.PushbackPolicyOption;
@@ -36,19 +30,13 @@ import org.osgi.util.pushstream.QueuePolicyOption;
  * @author Mark Hoffmann
  * @since 03.01.2019
  */
-public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStreamConstants {
+public class OptionPushStreamContext<T> extends AbstractOptionContext<T> implements PushStreamContext<T> {
 	
-	private final Map<String, Object> options;
-
 	/**
 	 * Creates a new instance.
 	 */
 	public OptionPushStreamContext(Map<String, Object> options) {
-		if (options != null && !options.isEmpty()) {
-			this.options = Collections.unmodifiableMap(options);
-		} else {
-			this.options = Collections.emptyMap();
-		}
+		super(options);
 	}
 
 	/* 
@@ -57,36 +45,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 	 */
 	@Override
 	public int getBufferSize() {
-		Integer bs = getValue(PROP_BUFFER_SIZE, Integer.class, Integer.valueOf(0));
-		return isNull(bs) ? 0 : bs.intValue();
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getParallelism()
-	 */
-	@Override
-	public int getParallelism() {
-		Integer p = getValue(PROP_PARALLELISM, Integer.class, Integer.valueOf(1));
-		return isNull(p) ? 1 : p.intValue();
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getExecutor()
-	 */
-	@Override
-	public ExecutorService getExecutor() {
-		return getValue(PROP_EXECUTOR, ExecutorService.class, null);
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getScheduler()
-	 */
-	@Override
-	public ScheduledExecutorService getScheduler() {
-		return getValue(PROP_SCHEDULED_EXECUTOR, ScheduledExecutorService.class, null);
+		return getBufferSize(PROP_BUFFER_SIZE);
 	}
 
 	/* 
@@ -181,66 +140,6 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 		Long t = getValue(PROP_PUSHBACK_POLICY_TIME, Long.class, null); 
 		return t;
 	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getAcknowledgeFilter()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Predicate<T> getAcknowledgeFilter() {
-		return  getValue(PROP_ACK_FILTER, Predicate.class, null);
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getAcknowledgeFunction()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Consumer<T> getAcknowledgeFunction() {
-		return getValue(PROP_ACK_CONSUMER, Consumer.class, null);
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getNAcknowledgeFunction()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Consumer<T> getNAcknowledgeFunction() {
-		return getValue(PROP_NACK_CONSUMER, Consumer.class, null);
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * @see org.gecko.util.pushstreams.PushStreamContext#getAcknowledgeErrorFunction()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public BiConsumer<Throwable, T> getAcknowledgeErrorFunction() {
-		return getValue(PROP_ACK_ERROR, BiConsumer.class, null);
-	}
-
-	/**
-	 * Returns the value of the key or <code>null</code>. If the provided class does not fit to the value's class an {@link IllegalStateException} will be thrown 
-	 * @param key the options key
-	 * @param clazz the class type of the expected value
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private <O> O getValue(String key, Class<O> clazz, O defaultValue) {
-		Object o = options.getOrDefault(key, defaultValue);
-		if (isNull(o)) {
-			return null;
-		}
-		if (clazz.isAssignableFrom(o.getClass())) {
-			return (O)o;
-		} else {
-			throw new IllegalStateException(String.format("The value of key '%s' is exepected of type '%s', but was of type '%s'", key, clazz.getName(), o.getClass().getName()));
-		}
-	}
-
 	/* 
 	 * (non-Javadoc)
 	 * @see org.gecko.util.pushstreams.PushStreamContext#getQueuePolicyByName()
