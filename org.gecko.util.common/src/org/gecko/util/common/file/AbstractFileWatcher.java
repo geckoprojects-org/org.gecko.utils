@@ -188,6 +188,7 @@ public abstract class AbstractFileWatcher implements Runnable {
 					key.reset();
 				}
 			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 				logger.log(Level.SEVERE, String.format("[%s] Watching the folder was interrupted", name), e);
 			}
 		}

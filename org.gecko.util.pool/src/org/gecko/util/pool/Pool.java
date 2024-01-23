@@ -128,6 +128,7 @@ public class Pool<T extends Object> {
 			inUse.offer(instance);
 			return instance;
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw new PoolException("Somewhing went wrong while quireing an Object from the Pool[" + name + "]", e);
 		}
 	}

@@ -112,8 +112,11 @@ public class GradualBreakingQueuePolicy<T, U extends BlockingQueue<PushEvent<? e
 				mbean.setCurrentWaitTime(0);
 			}
 			queue.put(event);
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			logger.log(Level.SEVERE, String.format("[%s] Interupted waiting for timeout",id), e);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, String.format("[%s] Error waiting for timeout",id), e);
 		}
 	}
 

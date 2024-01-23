@@ -13,6 +13,8 @@
  */
 package org.gecko.util.pushstream;
 
+import static java.util.Objects.isNull;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -56,7 +58,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 	@Override
 	public int getBufferSize() {
 		Integer bs = getValue(PROP_BUFFER_SIZE, Integer.class, Integer.valueOf(0));
-		return bs;
+		return isNull(bs) ? 0 : bs.intValue();
 	}
 
 	/* 
@@ -66,7 +68,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 	@Override
 	public int getParallelism() {
 		Integer p = getValue(PROP_PARALLELISM, Integer.class, Integer.valueOf(1));
-		return p;
+		return isNull(p) ? 1 : p.intValue();
 	}
 
 	/* 
@@ -143,7 +145,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 	public <U extends BlockingQueue<PushEvent<? extends T>>> PushbackPolicy<T, U> getPushbackPolicyByName() {
 		String name = getValue(PROP_PUSHBACK_POLICY_OPTION_BY_NAME, String.class, null);
 		Long time = getPushbackPolicyOptionTime();
-		if(time == null) {
+		if(isNull(time)) {
 			throw new IllegalArgumentException(PROP_PUSHBACK_POLICY_OPTION_BY_NAME + " requires " + PROP_PUSHBACK_POLICY_TIME + "to be set");
 		}
 		PushbackPolicyOption option = null;
@@ -153,7 +155,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 				break;
 			}
 		}
-		if(option == null) {
+		if(isNull(option)) {
 			GeckoPushbackPolicyOption pushbackPolicyOption = null;
 			for (GeckoPushbackPolicyOption geckoOption : GeckoPushbackPolicyOption.values()) {
 				if(geckoOption.name().equals(name)) {
@@ -161,7 +163,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 					break;
 				}
 			}
-			if(pushbackPolicyOption == null) {
+			if(isNull(pushbackPolicyOption)) {
 				throw new IllegalArgumentException("No PushbackPolicyOption or GeckoPushbackPolicyOption found with name " + name);
 			}
 			return pushbackPolicyOption.getPolicy(time);
@@ -229,7 +231,7 @@ public class OptionPushStreamContext<T> implements PushStreamContext<T>, PushStr
 	@SuppressWarnings("unchecked")
 	private <O> O getValue(String key, Class<O> clazz, O defaultValue) {
 		Object o = options.getOrDefault(key, defaultValue);
-		if (o == null) {
+		if (isNull(o)) {
 			return null;
 		}
 		if (clazz.isAssignableFrom(o.getClass())) {

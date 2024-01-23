@@ -13,6 +13,9 @@
  */
 package org.gecko.util.pushstream;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -39,7 +42,7 @@ public class OptionSimpleEventSourceContext<T> implements SimplePushEventSourceC
 	 * Creates a new instance.
 	 */
 	public OptionSimpleEventSourceContext(Map<String, Object> options) {
-		if (options != null && !options.isEmpty()) {
+		if (nonNull(options) && !options.isEmpty()) {
 			this.options = Collections.unmodifiableMap(options);
 		} else {
 			this.options = Collections.emptyMap();
@@ -53,7 +56,7 @@ public class OptionSimpleEventSourceContext<T> implements SimplePushEventSourceC
 	@Override
 	public int getBufferSize() {
 		Integer bs = getValue(PROP_SES_BUFFER_SIZE, Integer.class, Integer.valueOf(0));
-		return bs;
+		return isNull(bs) ? 0 : bs.intValue();
 	}
 
 
@@ -146,7 +149,7 @@ public class OptionSimpleEventSourceContext<T> implements SimplePushEventSourceC
 	@SuppressWarnings("unchecked")
 	private <O> O getValue(String key, Class<O> clazz, O defaultValue) {
 		Object o = options.getOrDefault(key, defaultValue);
-		if (o == null) {
+		if (isNull(o)) {
 			return null;
 		}
 		if (clazz.isAssignableFrom(o.getClass())) {
@@ -163,7 +166,7 @@ public class OptionSimpleEventSourceContext<T> implements SimplePushEventSourceC
 	@Override
 	public int getParallelism() {
 		Integer p = getValue(PROP_PARALLELISM, Integer.class, Integer.valueOf(1));
-		return p;
+		return isNull(p) ? 1 : p.intValue();
 	}
 
 	/* 

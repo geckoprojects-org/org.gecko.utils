@@ -108,6 +108,7 @@ public class CallBackEventSource<T> implements SimplePushEventSource<T>{
 		if(openCallBack != null) {
 			openCallBack.accept(this, aec);
 		}
+		
 		AutoCloseable closable = root.open(aec);
 		return () -> {
 			closable.close();
